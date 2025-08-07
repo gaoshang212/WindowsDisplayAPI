@@ -51,7 +51,9 @@ namespace WindowsDisplayAPI.DisplayConfig
                     throw new Win32Exception((int) result);
                 }
 
-                var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + dpiScale.CurrentScaleSteps;
+                var currentScaleSteps = dpiScale.CurrentScaleSteps < dpiScale.MinimumScaleSteps ? dpiScale.MinimumScaleSteps : dpiScale.CurrentScaleSteps;
+
+                var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + currentScaleSteps;
 
                 return DPIScales[currentScaleIndex];
             }
