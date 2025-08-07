@@ -17,7 +17,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         private static readonly DisplayConfigSourceDPIScale[] DPIScales = Enum
             .GetValues(typeof(DisplayConfigSourceDPIScale))
             .Cast<DisplayConfigSourceDPIScale>()
-            .OrderBy(scaling => (uint) scaling)
+            .OrderBy(scaling => (uint)scaling)
             .ToArray();
 
         /// <summary>
@@ -48,10 +48,18 @@ namespace WindowsDisplayAPI.DisplayConfig
 
                 if (result != Win32Status.Success)
                 {
-                    throw new Win32Exception((int) result);
+                    throw new Win32Exception((int)result);
                 }
 
-                var currentScaleSteps = dpiScale.CurrentScaleSteps < dpiScale.MinimumScaleSteps ? dpiScale.MinimumScaleSteps : dpiScale.CurrentScaleSteps;
+                var currentScaleSteps = dpiScale.CurrentScaleSteps;
+                if (dpiScale.CurrentScaleSteps < dpiScale.MinimumScaleSteps)
+                {
+                    currentScaleSteps = dpiScale.MinimumScaleSteps;
+                }
+                else if (dpiScale.CurrentScaleSteps > dpiScale.MaximumScaleSteps)
+                {
+                    currentScaleSteps = dpiScale.MaximumScaleSteps;
+                }
 
                 var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + currentScaleSteps;
 
@@ -66,7 +74,7 @@ namespace WindowsDisplayAPI.DisplayConfig
 
                 if (result != Win32Status.Success)
                 {
-                    throw new Win32Exception((int) result);
+                    throw new Win32Exception((int)result);
                 }
             }
         }
@@ -95,7 +103,7 @@ namespace WindowsDisplayAPI.DisplayConfig
                     return sourceName.DeviceName;
                 }
 
-                throw new Win32Exception((int) result);
+                throw new Win32Exception((int)result);
             }
         }
 
@@ -111,7 +119,7 @@ namespace WindowsDisplayAPI.DisplayConfig
 
                 if (result != Win32Status.Success)
                 {
-                    throw new Win32Exception((int) result);
+                    throw new Win32Exception((int)result);
                 }
 
                 var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + dpiScale.MaximumScaleSteps;
@@ -132,7 +140,7 @@ namespace WindowsDisplayAPI.DisplayConfig
 
                 if (result != Win32Status.Success)
                 {
-                    throw new Win32Exception((int) result);
+                    throw new Win32Exception((int)result);
                 }
 
                 return DPIScales[Math.Abs(dpiScale.MinimumScaleSteps)];
@@ -219,7 +227,7 @@ namespace WindowsDisplayAPI.DisplayConfig
                 return true;
             }
 
-            return obj.GetType() == GetType() && Equals((PathDisplaySource) obj);
+            return obj.GetType() == GetType() && Equals((PathDisplaySource)obj);
         }
 
         /// <inheritdoc />
@@ -227,7 +235,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         {
             unchecked
             {
-                return ((Adapter != null ? Adapter.GetHashCode() : 0) * 397) ^ (int) SourceId;
+                return ((Adapter != null ? Adapter.GetHashCode() : 0) * 397) ^ (int)SourceId;
             }
         }
 
